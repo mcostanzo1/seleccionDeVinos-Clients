@@ -133,16 +133,13 @@
                                             <td th:text="${stock.price}"></td>
                                             <td class="text-center">
                                                 <input class="form-check-input" type="checkbox" th:attr="id=${stock.stockCode}" onclick="myFunction(this)" aria-label="...">
-                                                <script>
-                                                    function myFunction(productCode) {
-                                                       if (productCode.checked)
-                                                            {
-                                                                alert(productCode.id);
-                                                                var isChecked=$this.is(':checked')
-                                                            }
-                                                        if (!isChecked)
-                                                            alert('uncheckd'+ productCode.id)
-
+                                                <script >
+                                                    function myFunction(product) {
+                                                        var CHKcollect= [];
+                                                        $('input[id='+ product.id +']:checked').each(function () {
+                                                            CHKcollect.push(product.id);
+                                                        });
+                                                        alert(CHKcollect.toString());
                                                     };
                                                 </script>
                                             </td>
@@ -235,10 +232,6 @@
 
                 </div>
             </div>
-
-
-
-
 
 
         </div>
