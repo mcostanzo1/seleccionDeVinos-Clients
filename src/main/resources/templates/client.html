@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Clients</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous"/>
+</head>
+<body>
+        <!--Nav-->
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link  dropdown-toggle" data-toggle="dropdown" href="/stock/all" role="button" aria-haspopup="true" aria-expanded="false">Stock</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/stock/all">Todos</a>
+                    <button class="dropdown-item" data-toggle="modal" data-target="#newWine">Vinos</button>
+                    <a class="dropdown-item disabled" href="#">Cervezas</a>
+                    <a class="dropdown-item disabled" href="#">Whiskies</a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" data-toggle="modal" data-target="#newStock">Añadir stock...</button>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled"  href="#">Pedidos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Clientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Listas de precios</a>
+            </li>
+        </ul>
+
+
+        <div class="container">
+            <h1>Clientes</h1>
+            <!-- Trigger the modal with a button -->
+
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#newClient">Nuevo cliente</button>
+
+
+            <!-- Client Table -->
+            <table id="clientTable" class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Código de cliente</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Acciones</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="client : ${clientList}">
+                        <td th:text="${client.clientCode}"></td>
+                        <td th:text="${client.clientName}"></td>
+                        <td th:text="${client.clientPhone}"></td>
+                        <td th:text="${client.clientLocation}"></td>
+                        <td th:text="${client.clientEmail}"></td>
+                        <td>
+                            <a class="btn btn-info" th:attr="id=${client.clientCode}" data-toggle="modal" onclick="myFunction(this.id)" data-target="#editClient">
+                                Editar
+                            </a>
+                            <script>
+                                function myFunction(clientId) {
+                                    var elems= document.getElementById(clientId);
+                                    var body = document.getElementById('editionDetails');
+                                    body.innerHTML = '' +
+                                        '<form id="editionForm" name="editionForm" method="post" action="/clients/delete/'+ elems.id + '">'+
+                                        '<button type="submit" id="btn-delete" class="btn btn-danger" />Borrar' +
+                                        '</form>';
+                                };
+                            </script>
+                        </td>
+                </tbody>
+            </table>
+
+            <!-- Delete Client Modal -->
+            <div id="editClient" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Editar</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div id="editionDetails" class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button  type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Client Modal -->
+            <div id="newClient" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo cliente</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form  id="clientForm" action="#" th:action="@{/clients/createClient}" method="post" name="clientForm">
+                                <div class="form-group">
+                                    <label for="clientName">Nombre</label>
+                                    <input type="text" class="form-control" id="clientName" name="clientName" placeholder="Ejemplo: Juan Gomez, Coca-Cola s.a., etc..."><br />
+                                    <label for="clientLocation">Dirección</label>
+                                    <input type="text" class="form-control" id="clientLocation" placeholder="Ejemplo: Pasteur 345 6to C" name="clientLocation"/><br />
+                                    <label for="clientPhone">Teléfono</label>
+                                    <input type="number" class="form-control" placeholder="solo números: 1551754635" id="clientPhone" name="clientPhone"/><br />
+                                    <label for="clientEmail">Email</label>
+                                    <input type="email" class="form-control" placeholder="juangomez@gmail.com" id="clientEmail" name="clientEmail"/><br />
+                                    <button type="submit" id="submitClient" class="btn btn-primary" >Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button  type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Stock Modal -->
+            <div id="newStock" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Stock</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form  id="stockForm" action="#" th:action="@{/stock/createStock}" method="post" name="stockForm">
+                                <div class="form-group">
+                                    <label for="quantityOnStockBox">Cantidad de cajas</label>
+                                    <input type="number" class="form-control" id="quantityOnStockBox" placeholder="1,2,3...90..." name="quantityOnStockBox"/><br />
+                                    <label for="productName">Producto</label>
+                                    <select class="form-control" name="productName" id="productName">
+                                        <option th:each="wine : ${wines}"
+                                                th:value="${wine.wineName}"
+                                                th:text="${wine.wineName}"
+                                                th:select="${wine.wineName}">
+                                        </option>
+                                    </select><br />
+                                    <label for="price">Precio unitario</label>
+                                    <input type="number" class="form-control" placeholder="1,2,45,45.45...." id="price" name="price"/><br />
+                                    <button type="submit" id="stockSubmit"  class="btn btn-primary" >Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button  type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Wine Modal -->
+            <div id="newWine" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Nuevo Vino</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form  id="wineForm" action="#"  th:action="@{/wines/createWine}" method="post" name="wineForm">
+                                <div class="form-group">
+                                    <label for="wineName">Nombre</label>
+                                    <input type="text" class="form-control" id="wineName" name="wineName" placeholder="Ingrese el nombre del vino"><br />
+                                    <label for="quantityOnBox">Cantidad en caja</label>
+                                    <input type="number" class="form-control" id="quantityOnBox" placeholder="1,2,3...90..." name="quantityOnBox"/><br />
+                                    <label for="cellar">Bodega</label>
+                                    <select class="form-control" name="cellar" id="cellar">
+                                        <option th:each="cellar : ${cellars}"
+                                                th:value="${cellar.cellarName}"
+                                                th:select="${cellar.cellarName}"
+                                                th:text="${cellar.cellarName}">
+                                        </option>
+                                    </select><br />
+                                    <label for="wineClasify">Clasificación</label>
+                                    <input type="text" class="form-control" placeholder="malbec,chardonnay..." id="wineClasify" name="clasify"/><br />
+                                    <button type="submit" id="wineSubmit"  class="btn btn-primary" >Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button  type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
+
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+</body>
+</html>
