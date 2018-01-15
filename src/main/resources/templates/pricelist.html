@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Clients</title>
+    <title>Listas de precios</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous"/>
@@ -28,43 +28,43 @@
                 <a class="nav-link disabled"  href="#">Pedidos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="#">Clientes</a>
+                <a class="nav-link " href="#">Clientes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/lists/all">Listas de precios</a>
+                <a class="nav-link active" href="#">Listas de precios</a>
             </li>
         </ul>
 
 
         <div class="container">
-            <h1>Clientes</h1>
+            <h1>Listas de precios</h1>
             <!-- Trigger the modal with a button -->
 
-            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#newClient">Nuevo cliente</button>
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#newClient">Nueva Lista</button>
 
 
             <!-- Client Table -->
             <table id="clientTable" class="table">
                 <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Código de cliente</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Teléfono</th>
-                    <th scope="col">Dirección</th>
-                    <th scope="col">Email</th>
+                    <th scope="col">Código de lista</th>
+                    <th scope="col">Nombre de lista</th>
+                    <th scope="col">Cantidad de productos</th>
+                    <th scope="col">Porcentaje aplicado</th>
                     <th scope="col">Acciones</th>
+
+
 
                 </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="client : ${clientList}">
-                        <td th:text="${client.clientCode}"></td>
-                        <td th:text="${client.clientName}"></td>
-                        <td th:text="${client.clientPhone}"></td>
-                        <td th:text="${client.clientLocation}"></td>
-                        <td th:text="${client.clientEmail}"></td>
+                    <tr th:each="priceList : ${priceListList}">
+                        <td th:text="${priceList.listCode}"></td>
+                        <td th:text="${priceList.listName}"></td>
+                        <td th:text="${priceList.listQuantityOfProducts}"></td>
+                        <td th:text="${priceList.listPercentage}"></td>
                         <td>
-                            <a class="btn btn-info"  data-toggle="modal" th:attr="id=${client.clientCode}" onclick="myFunction(this.id)" data-target="#editClient">
+                            <a class="btn btn-info" th:attr="id=${priceList.listCode}" data-toggle="modal" onclick="myFunction(this.id)" data-target="#editList">
                                 Editar
                             </a>
                             <script>
@@ -72,7 +72,7 @@
                                     var elems= document.getElementById(clientId);
                                     var body = document.getElementById('editionDetails');
                                     body.innerHTML = '' +
-                                        '<form id="editionForm" name="editionForm" method="post" action="/clients/delete/'+ elems.id + '">'+
+                                        '<form id="editionForm" name="editionForm" method="post" action="/lists/delete/'+ elems.id + '">'+
                                         '<button type="submit" id="btn-delete" class="btn btn-danger" />Borrar' +
                                         '</form>';
                                 };
@@ -81,8 +81,8 @@
                 </tbody>
             </table>
 
-            <!-- Delete Client Modal -->
-            <div id="editClient" class="modal fade" role="dialog">
+            <!-- Delete List Modal -->
+            <div id="editList" class="modal fade" role="dialog">
                 <div class="modal-dialog">
 
                     <!-- Modal content-->
@@ -101,28 +101,54 @@
                 </div>
             </div>
 
-            <!-- Client Modal -->
-            <div id="newClient" class="modal fade" role="dialog">
-                <div class="modal-dialog">
+            <!-- List Modal -->
+            <div id="newClient" class="modal fade"  role="dialog">
+                <div class="modal-dialog" style="width:4000px;">
 
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Nuevo cliente</h4>
+                            <h4 class="modal-title">Nueva lista de precios</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <form  id="clientForm" action="#" th:action="@{/clients/createClient}" method="post" name="clientForm">
+                            <form  id="listForm" action="#" th:action="@{/lists/createList}" method="post" name="listForm">
                                 <div class="form-group">
-                                    <label for="clientName">Nombre</label>
-                                    <input type="text" class="form-control" id="clientName" name="clientName" placeholder="Ejemplo: Juan Gomez, Coca-Cola s.a., etc..."><br />
-                                    <label for="clientLocation">Dirección</label>
-                                    <input type="text" class="form-control" id="clientLocation" placeholder="Ejemplo: Pasteur 345 6to C" name="clientLocation"/><br />
-                                    <label for="clientPhone">Teléfono</label>
-                                    <input type="number" class="form-control" placeholder="solo números: 1551754635" id="clientPhone" name="clientPhone"/><br />
-                                    <label for="clientEmail">Email</label>
-                                    <input type="email" class="form-control" placeholder="juangomez@gmail.com" id="clientEmail" name="clientEmail"/><br />
-                                    <button type="submit" id="submitClient" class="btn btn-primary" >Guardar</button>
+                                    <label for="listName">Nombre de lista</label>
+                                    <input type="text" class="form-control" id="listName" name="listName" placeholder="Ejemplo: Lista de amigos"><br />
+                                    <label for="percentage">Porcentaje aplicado %</label>
+                                    <input type="number" class="form-control" id="percentage" placeholder="Ejemplo: 10" name="percentage"/><br />
+                                    <label for="produtcTable">Productos</label>
+                                    <table id="produtcTable" class="table">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Producto</th>
+                                            <th scope="col">Precio de lista</th>
+                                            <th scope="col">Agregar</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="stock : ${stockList}">
+                                            <td th:text="${stock.productName}"></td>
+                                            <td th:text="${stock.price}"></td>
+                                            <td class="text-center">
+                                                <input class="form-check-input" type="checkbox" th:attr="id=${stock.stockCode}" onclick="myFunction(this)" aria-label="...">
+                                                <script>
+                                                    function myFunction(productCode) {
+                                                       if (productCode.checked)
+                                                            {
+                                                                alert(productCode.id);
+                                                                var isChecked=$this.is(':checked')
+                                                            }
+                                                        if (!isChecked)
+                                                            alert('uncheckd'+ productCode.id)
+
+                                                    };
+                                                </script>
+                                            </td>
+                                        </tbody>
+                                    </table>
+                                    <button type="submit" id="submitList" class="btn btn-primary" >Guardar</button>
                                 </div>
                             </form>
                         </div>
