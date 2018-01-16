@@ -112,7 +112,6 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <form  id="listForm" action="#" th:action="@{/lists/createList}" method="post" name="listForm">
                                 <div class="form-group">
                                     <label for="listName">Nombre de lista</label>
                                     <input type="text" class="form-control" id="listName" name="listName" placeholder="Ejemplo: Lista de amigos"><br />
@@ -133,26 +132,64 @@
                                             <td th:text="${stock.price}"></td>
                                             <td class="text-center">
                                                 <input class="form-check-input" type="checkbox" th:attr="id=${stock.stockCode}" onclick="checkBox(this)" aria-label="...">
-                                                <script >
-                                                    var arr= [];
-                                                    function checkBox(status) {
-                                                                if(status.checked){
-                                                                    arr.push(status.id);
-                                                                    alert(arr);
-                                                                }else
-                                                                {
-                                                                    var index = arr.indexOf(status.id);
-                                                                    arr.splice(index,1);
-                                                                    alert(arr);
-                                                                }
-                                                    }
-                                                </script>
                                             </td>
                                         </tbody>
                                     </table>
-                                    <button type="submit" id="submitList" class="btn btn-primary" >Guardar</button>
+                                    <button class="btn btn-primary" onclick="post()" >Guardar</button>
+                                    <script>
+                                        var arr= [];
+                                        function checkBox(status) {
+                                            if(status.checked){
+                                                arr.push('"'+status.id+'"');
+                                                var listName = document.getElementById('listName').value;
+                                                var percentage = document.getElementById('percentage').value;
+                                                var json=
+                                                    '{' +
+                                                    '"listName": "'+listName+'",'+
+                                                    '"percentage": "'+percentage+'",'+
+                                                    '"stockCodes": ['+ arr+
+                                                        ']}';
+                                                alert(json);
+                                            }else
+                                            {
+                                                var index = arr.indexOf('"'+status.id+'"');
+                                                arr.splice(index,1);
+                                                var json=
+                                                    '{' +
+                                                    '"listName":'+listName+','+
+                                                    '"percentage":'+percentage+','+
+                                                    '"stockCodes": ['+ arr+
+                                                    ']}';
+                                                alert(json);
+                                            }
+
+
+                                            var path = "/lists/createList";
+                                            function post(path,params,method){
+                                                method = method || "post";
+
+                                                var form = document.createElement("form");
+                                                form.setAttribute("method", method);
+                                                form.setAttribute("action",path);
+
+
+
+                                                        var hiddenField = document.createElement("input");
+                                                        hiddenField.setAttribute("type","hidden");
+                                                        hiddenField.setAttribute("name", key);
+                                                        hiddenField.setAttribute("value", params);
+                                                        form.appendChild(hiddenField);
+
+
+
+                                                document.body.appendChild(form);
+                                                form.submit();
+
+                                            }
+                                           post(path,json);
+                                        }
+                                    </script>
                                 </div>
-                            </form>
                         </div>
                         <div class="modal-footer">
                             <button  type="button" class="btn btn-default" data-dismiss="modal">Close</button>
